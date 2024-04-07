@@ -3,6 +3,8 @@ import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
 import { Dummy } from './model/dummy.entity';
 import { CreateDummy1712500758914 } from './migrations/1712500758914-CreateDummy';
+import { User } from './model/user.entity';
+import { CreateUser1712506270507 } from './migrations/1712506270507-CreateUser';
 
 config();
 
@@ -14,6 +16,6 @@ export default new DataSource({
   username: configService.get('POSTGRES_USER'),
   password: configService.get('POSTGRES_PASSWORD'),
   database: configService.get('POSTGRES_DATABASE'),
-  entities: [Dummy],
-  migrations: [CreateDummy1712500758914],
+  entities: [Dummy, User],
+  migrations: [CreateDummy1712500758914, CreateUser1712506270507],
 });
