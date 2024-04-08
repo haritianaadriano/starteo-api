@@ -18,4 +18,6 @@ export default new DataSource({
   database: configService.get('POSTGRES_DATABASE'),
   entities: [Dummy, User],
   migrations: [CreateDummy1712500758914, CreateUser1712506270507],
+  migrationsRun: true,
+  synchronize: false,
 });
