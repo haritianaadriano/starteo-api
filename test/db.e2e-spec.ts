@@ -1,16 +1,16 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { Test, TestingModule } from '@nestjs/testing';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   PostgreSqlContainer,
   StartedPostgreSqlContainer,
 } from '@testcontainers/postgresql';
 import { Dummy } from './../src/model/dummy.entity';
 import { User } from './../src/model/user.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppModule } from './../src//app.module';
+import * as request from 'supertest';
 
-describe('AppController (e2e)', () => {
+describe('DbHealthController (e2e)', () => {
   let app: INestApplication;
   let module: TestingModule;
   let container: StartedPostgreSqlContainer;
@@ -50,10 +50,10 @@ describe('AppController (e2e)', () => {
     }
   });
 
-  it('/ (GET)', () => {
+  it('/health/db (GET)', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .get('/health/db')
       .expect(200)
-      .expect('Hello World!');
+      .expect('OK');
   });
 });
