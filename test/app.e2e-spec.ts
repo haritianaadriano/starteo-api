@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
 import {
   PostgreSqlContainer,
   StartedPostgreSqlContainer,
@@ -9,6 +8,11 @@ import {
 import { Dummy } from './../src/model/dummy.entity';
 import { User } from './../src/model/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './../src/auth/auth.module';
+import { DbHealthModule } from './../src/module/dummy.module';
+import { UserModule } from './../src/module/user.module';
+import { AppController } from './../src/app.controller';
+import { AppService } from './../src/app.service';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -35,8 +39,12 @@ describe('AppController (e2e)', () => {
             };
           },
         }),
-        AppModule,
+        AuthModule,
+        DbHealthModule,
+        UserModule,
       ],
+      controllers: [AppController],
+      providers: [AppService],
     }).compile();
 
     app = module.createNestApplication();
