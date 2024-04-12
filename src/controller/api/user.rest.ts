@@ -6,10 +6,15 @@ export class UserApi {
   @ApiProperty()
   lastname: string;
   @ApiProperty()
+  username: string;
+  @ApiProperty()
   email: string;
 
   constructor() {}
 
+  setUsername(username: string) {
+    this.username = username;
+  }
   setFirstname(firstname: string) {
     this.firstname = firstname;
   }

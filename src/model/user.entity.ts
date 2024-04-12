@@ -11,6 +11,9 @@ export class User {
   @Column()
   lastname: string;
 
+  @Column({nullable: true})
+  username: string;
+
   @Column()
   creationDate: Date;
 
@@ -36,5 +39,8 @@ export class User {
   }
   setPassword(password: string) {
     this.password = password;
+  }
+  setUsername(username: string) {
+    this.username = username;
   }
 }

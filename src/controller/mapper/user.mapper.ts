@@ -28,6 +28,7 @@ export class UserMapper {
     user.setFirstname(signupApi.firstname);
     user.setLastname(signupApi.lastname);
     user.setPassword(signupApi.password);
+    user.setUsername(signupApi.username);
     return user;
   }
 }
