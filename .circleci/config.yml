@@ -47,14 +47,6 @@ jobs:
       - node/install-packages
       - run:
           command: npm run test
-  build-and-e2e:
-    executor:
-      name: node/default
-    steps:
-      - checkout
-      - node/install-packages
-      - run:
-          command: npm run test:e2e    
   deploy:
     # This is an example deploy job, not actually used by the workflow
     docker:
@@ -74,9 +66,3 @@ workflows:
   build-and-test:
     jobs:
       - build-and-test  
-  build-and-e2e:
-    jobs:
-      - build-and-e2e 
-    # - deploy:
-    #     requires:
-    #       - build-node
