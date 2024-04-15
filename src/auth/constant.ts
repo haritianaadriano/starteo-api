@@ -1,3 +1,4 @@
 export const jwtConstants = {
-  secret: process.env.JWT_SECRET,
+  //TODO: fix how can we manage variable env in ADAPTABLE
+  secret: "JWT TOKEN erzapofdwvdnjopaerih!!;;:#123486345",
 };
