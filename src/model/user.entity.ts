@@ -11,7 +11,7 @@ export class User {
   @Column()
   lastname: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   username: string;
 
   @Column()

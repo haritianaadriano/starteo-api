@@ -6,8 +6,8 @@ export class UserMapper {
   constructor() {}
 
   async toRest(promiseUser: Promise<User>): Promise<UserApi> {
-    let userApi = new UserApi();
-    let user = await promiseUser;
+    const userApi = new UserApi();
+    const user = await promiseUser;
     userApi.setEmail(user.email);
     userApi.setFirstname(user.firstname);
     userApi.setLastname(user.lastname);
@@ -15,7 +15,7 @@ export class UserMapper {
   }
 
   userApiToDomain(userApi: UserApi): User {
-    let user = new User();
+    const user = new User();
     user.setEmail(userApi.email);
     user.setFirstname(userApi.firstname);
     user.setLastname(userApi.lastname);
@@ -23,7 +23,7 @@ export class UserMapper {
   }
 
   signupApiToDomain(signupApi: SignupApi): User {
-    let user = new User();
+    const user = new User();
     user.setEmail(signupApi.email);
     user.setFirstname(signupApi.firstname);
     user.setLastname(signupApi.lastname);

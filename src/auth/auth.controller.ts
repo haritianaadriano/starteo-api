@@ -34,8 +34,8 @@ export class AuthController {
     type: UserApi,
   })
   signUp(@Body() toCreate: SignupApi): Promise<UserApi> {
-    let user = this.userMapper.signupApiToDomain(toCreate);
-    let userToRest = this.userService.saveUser(user);
+    const user = this.userMapper.signupApiToDomain(toCreate);
+    const userToRest = this.userService.saveUser(user);
     return this.userMapper.toRest(userToRest);
   }
 }
