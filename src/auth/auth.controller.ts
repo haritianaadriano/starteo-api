@@ -6,7 +6,7 @@ import { Public } from '../module/decorator/public-access.decorator';
 import { SignupApi } from '../controller/api/signup.rest';
 import { SignInApi } from '../controller/api/signin.rest';
 import { TokenApi } from '../controller/api/token.rest';
-import { ApiCreatedResponse } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { UserApi } from '../controller/api/user.rest';
 
 @Controller('auth')
@@ -23,6 +23,7 @@ export class AuthController {
     description: 'Token provided',
     type: TokenApi,
   })
+  @ApiTags('auth')
   signIn(@Body() signIn: SignInApi): Promise<TokenApi> {
     return this.authService.signIn(signIn.email, signIn.password);
   }
@@ -33,9 +34,10 @@ export class AuthController {
     description: 'User created',
     type: UserApi,
   })
+  @ApiTags('auth')
   signUp(@Body() toCreate: SignupApi): Promise<UserApi> {
-    let user = this.userMapper.signupApiToDomain(toCreate);
-    let userToRest = this.userService.saveUser(user);
+    const user = this.userMapper.signupApiToDomain(toCreate);
+    const userToRest = this.userService.saveUser(user);
     return this.userMapper.toRest(userToRest);
   }
 }

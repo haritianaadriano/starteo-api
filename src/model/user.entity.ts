@@ -1,4 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -11,10 +16,10 @@ export class User {
   @Column()
   lastname: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   username: string;
 
-  @Column()
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   creationDate: Date;
 
   @Column()
@@ -27,6 +32,10 @@ export class User {
   password: string;
 
   constructor() {}
+
+  setBirthdate(birthdate: Date) {
+    this.birthdate = birthdate;
+  }
 
   setFirstname(firstname: string) {
     this.firstname = firstname;

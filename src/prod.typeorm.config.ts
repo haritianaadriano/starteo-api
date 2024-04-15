@@ -1,4 +1,3 @@
-import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
 import { Dummy } from './model/dummy.entity';
@@ -9,14 +8,9 @@ import { CreateUser1713183354964 } from './migrations/1713183354964-CreateUser';
 
 config();
 
-const configService = new ConfigService();
-
 export default new DataSource({
   type: 'postgres',
-  port: configService.get('POSTGRES_PORT'),
-  username: configService.get('POSTGRES_USER'),
-  password: configService.get('POSTGRES_PASSWORD'),
-  database: configService.get('POSTGRES_DATABASE'),
+  url: process.env.DATABASE_URL,
   entities: [Dummy, User, Customization],
   // Order by creation time
   migrations: [CreateDummy1712500758914, CreateUser1713183354964],
