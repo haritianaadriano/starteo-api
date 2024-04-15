@@ -19,10 +19,7 @@ export default new DataSource({
   database: configService.get('POSTGRES_DATABASE'),
   entities: [Dummy, User, Customization],
   // Order by creation time
-  migrations: [
-    CreateDummy1712500758914,
-    CreateUser1713183354964,
-  ],
+  migrations: [CreateDummy1712500758914, CreateUser1713183354964],
   migrationsRun: true,
   synchronize: false,
 });

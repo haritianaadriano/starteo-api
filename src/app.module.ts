@@ -11,7 +11,7 @@ import { CustomizationModule } from './module/cutomization.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    LocalDatabaseModule,
+    DatabaseModule,
     DbHealthModule,
     UserModule,
     AuthModule,

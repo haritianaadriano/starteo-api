@@ -12,7 +12,7 @@ export class UserMapper {
     userApi.setEmail(user.email);
     userApi.setFirstname(user.firstname);
     userApi.setLastname(user.lastname);
-    return userApi; 
+    return userApi;
   }
 
   async toRest(promiseUser: Promise<User>): Promise<UserApi> {

@@ -31,8 +31,7 @@ export class CustomizationController {
     const domainCustomizations =
       await this.customizationService.mapAndSave(toCrupdate);
 
-      console.log(domainCustomizations);
-      
+    console.log(domainCustomizations);
 
     const restCustomizations = await Promise.all(
       domainCustomizations.map((customization) =>
@@ -53,7 +52,8 @@ export class CustomizationController {
     @Param() id: number,
   ): Promise<CustomizationByIdApi> {
     const customization = await this.customizationService.findById(id);
-    const mappedCustomization = this.customizationMapper.byOneToRest(customization);
+    const mappedCustomization =
+      this.customizationMapper.byOneToRest(customization);
     return mappedCustomization;
   }
 }

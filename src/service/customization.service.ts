@@ -36,9 +36,7 @@ export class CustomizationService {
     crupdateCustomization: CrupdateCustomizationApi,
   ): Promise<Customization> {
     const customization = new Customization();
-    const user = await this.userService.findById(
-      crupdateCustomization.user_id,
-    );
+    const user = await this.userService.findById(crupdateCustomization.user_id);
 
     customization.id = crupdateCustomization.id;
     customization.careerPath = crupdateCustomization.carrer_path;

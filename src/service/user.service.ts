@@ -12,11 +12,11 @@ export class UserService {
   ) {}
 
   async findUsers(pagination: PaginationQuery): Promise<User[]> {
-    if(pagination.page === 0 || pagination.page === undefined) {
+    if (pagination.page === 0 || pagination.page === undefined) {
       throw new HttpException('page required', HttpStatus.BAD_REQUEST);
     }
 
-    if(pagination.page_size === 0 || pagination.page_size === undefined) {
+    if (pagination.page_size === 0 || pagination.page_size === undefined) {
       throw new HttpException('page_size required', HttpStatus.BAD_REQUEST);
     }
 
@@ -25,7 +25,7 @@ export class UserService {
 
     return this.userRepository.find({
       take: page_size,
-      skip
+      skip,
     });
   }
 

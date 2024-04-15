@@ -13,10 +13,7 @@ export default new DataSource({
   url: process.env.DATABASE_URL,
   entities: [Dummy, User, Customization],
   // Order by creation time
-  migrations: [
-    CreateDummy1712500758914,
-    CreateUser1713183354964,
-  ],
+  migrations: [CreateDummy1712500758914, CreateUser1713183354964],
   migrationsRun: true,
   synchronize: false,
 });
