@@ -4,6 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { CustomizationOptions } from './enums/customization.enum';
 
 @Entity()
 export class User {
@@ -28,11 +29,32 @@ export class User {
   @Column()
   birthdate: Date;
 
+  @Column({ nullable: true })
+  description: string;
+
+  @Column({ type: 'varchar', nullable: false })
+  customizationOption: CustomizationOptions;
+
+  @Column()
+  careerPath: string;
+
   @Column()
   password: string;
 
   constructor() {}
 
+  setId(id: string) {
+    this.id = id;
+  }
+  setDescription(description: string) {
+    this.description = description;
+  }
+  setCareerPath(careerPath: string) {
+    this.careerPath = careerPath;
+  }
+  setCustomizationOptio(customization: CustomizationOptions) {
+    this.customizationOption = customization;
+  }
   setBirthdate(birthdate: Date) {
     this.birthdate = birthdate;
   }

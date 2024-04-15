@@ -4,7 +4,6 @@ import { DataSource } from 'typeorm';
 import { Dummy } from './model/dummy.entity';
 import { CreateDummy1712500758914 } from './migrations/1712500758914-CreateDummy';
 import { User } from './model/user.entity';
-import { Customization } from './model/customization.entity';
 import { CreateUser1713183354964 } from './migrations/1713183354964-CreateUser';
 
 config();
@@ -17,7 +16,7 @@ export default new DataSource({
   username: configService.get('POSTGRES_USER'),
   password: configService.get('POSTGRES_PASSWORD'),
   database: configService.get('POSTGRES_DATABASE'),
-  entities: [Dummy, User, Customization],
+  entities: [Dummy, User],
   // Order by creation time
   migrations: [CreateDummy1712500758914, CreateUser1713183354964],
   migrationsRun: true,

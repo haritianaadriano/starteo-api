@@ -12,6 +12,9 @@ export class UserMapper {
     userApi.setEmail(user.email);
     userApi.setFirstname(user.firstname);
     userApi.setLastname(user.lastname);
+    userApi.setCareerPath(user.careerPath);
+    userApi.setCustomizationOptio(user.customizationOption);
+    userApi.setDescription(user.description);
     return userApi;
   }
 
@@ -23,6 +26,9 @@ export class UserMapper {
     userApi.setEmail(user.email);
     userApi.setFirstname(user.firstname);
     userApi.setLastname(user.lastname);
+    userApi.setCareerPath(user.careerPath);
+    userApi.setCustomizationOptio(user.customizationOption);
+    userApi.setDescription(user.description);
     return userApi;
   }
 
@@ -32,6 +38,9 @@ export class UserMapper {
     user.setFirstname(userApi.firstname);
     user.setLastname(userApi.lastname);
     user.setUsername(userApi.username);
+    user.setCareerPath(userApi.career_path);
+    user.setCustomizationOptio(userApi.customization_option);
+    user.setDescription(userApi.description);
     return user;
   }
 
@@ -43,6 +52,9 @@ export class UserMapper {
     user.setPassword(signupApi.password);
     user.setUsername(signupApi.username);
     user.setBirthdate(signupApi.birthdate);
+    user.setCareerPath(signupApi.career_path);
+    user.setDescription(signupApi.description);
+    user.setCustomizationOptio(signupApi.customization_option);
     return user;
   }
 }
