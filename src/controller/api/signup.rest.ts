@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail } from 'class-validator';
 
 export class SignupApi {
   @ApiProperty()
@@ -6,14 +7,20 @@ export class SignupApi {
   @ApiProperty()
   lastname: string;
   @ApiProperty()
+  @IsEmail()
   email: string;
   @ApiProperty()
   username: string;
   @ApiProperty()
   password: string;
+  @ApiProperty()
+  birthdate: Date;
 
   constructor() {}
 
+  setBirthdate(date: Date) {
+    this.birthdate = date;
+  }
   setFirstname(firstname: string) {
     this.firstname = firstname;
   }
