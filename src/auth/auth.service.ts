@@ -23,6 +23,13 @@ export class AuthService {
       lastname: user.lastname,
       password: user.password,
       email: user.email,
+      isSubscribed: user.isSubscribed,
+      career_path: user.careerPath,
+      customization_option: user.customizationOption,
+      description: user.description,
+      birthdate: user.birthdate,
+      username: user.username,
+      creation_datetime: user.creationDate,
     };
     return {
       email: user.email,

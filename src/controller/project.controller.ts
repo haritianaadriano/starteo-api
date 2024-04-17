@@ -20,7 +20,6 @@ export class ProjectController {
   async findProjects(
     @Query() paginationQuery: PaginationQuery,
   ): Promise<ProjectApi[]> {
-    //TODO: integrate this service with the actual
     return [];
   }
 }
