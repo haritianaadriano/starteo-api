@@ -24,6 +24,9 @@ export class ProjectService {
     const skip = (page - 1) * page_size;
 
     return this.projectRepository.find({
+      relations: {
+        user: true,
+      },
       take: page_size,
       skip,
     });
