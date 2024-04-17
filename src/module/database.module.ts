@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Dummy } from '../model/dummy.entity';
 import { User } from '../model/user.entity';
+import { Project } from '../model/project.entity';
+import { Donation } from '../model/donation.entity';
 
 @Module({
   imports: [
@@ -12,7 +14,7 @@ import { User } from '../model/user.entity';
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         url: process.env.DATABASE_URL,
-        entities: [Dummy, User],
+        entities: [Dummy, User, Project, Donation],
         synchronize: true,
         migrationsRun: true,
       }),
@@ -32,7 +34,7 @@ export class DatabaseModule {}
         database: configService.get('POSTGRES_DATABASE'),
         password: configService.get('POSTGRES_PASSWORD'),
         port: configService.get('POSTGRES_PORT'),
-        entities: [Dummy, User],
+        entities: [Dummy, User, Project, Donation],
         synchronize: true,
         migrationsRun: true,
       }),

@@ -39,7 +39,7 @@ export class AuthGuard implements CanActivate {
     } catch {
       throw new UnauthorizedException();
     }
-    return true;
+    return true && request['user'].isSubscribed;
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {

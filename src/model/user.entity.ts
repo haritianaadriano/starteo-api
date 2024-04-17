@@ -41,6 +41,9 @@ export class User {
   @Column()
   password: string;
 
+  @Column({ default: true })
+  isSubscribed: boolean;
+
   constructor() {}
 
   setId(id: string) {
