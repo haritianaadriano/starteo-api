@@ -5,6 +5,10 @@ import { Dummy } from './model/dummy.entity';
 import { CreateDummy1712500758914 } from './migrations/1712500758914-CreateDummy';
 import { User } from './model/user.entity';
 import { CreateUser1713183354964 } from './migrations/1713183354964-CreateUser';
+import { Project } from './model/project.entity';
+import { CreateProject1713358961833 } from './migrations/1713358961833-CreateProject';
+import { Donation } from './model/donation.entity';
+import { CreateDonation1713359250906 } from './migrations/1713359250906-CreateDonation';
 
 config();
 
@@ -16,9 +20,14 @@ export default new DataSource({
   username: configService.get('POSTGRES_USER'),
   password: configService.get('POSTGRES_PASSWORD'),
   database: configService.get('POSTGRES_DATABASE'),
-  entities: [Dummy, User],
+  entities: [Dummy, User, Project, Donation],
   // Order by creation time
-  migrations: [CreateDummy1712500758914, CreateUser1713183354964],
+  migrations: [
+    CreateDummy1712500758914,
+    CreateUser1713183354964,
+    CreateProject1713358961833,
+    CreateDonation1713359250906,
+  ],
   migrationsRun: true,
   synchronize: false,
 });
