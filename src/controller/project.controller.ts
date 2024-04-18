@@ -55,7 +55,10 @@ export class ProjectController {
     @Param('user_id') userId: string,
     @Body() projectsApi: CreateProjectApi[],
   ): Promise<ProjectApi[]> {
-    const projects = await this.projectService.saveProjects(projectsApi);
+    const projects = await this.projectService.saveProjects(
+      projectsApi,
+      userId,
+    );
     const mappedProjects = await Promise.all(
       projects.map((project) => this.projectMapper.fromDomainToRest(project)),
     );

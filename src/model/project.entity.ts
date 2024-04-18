@@ -3,9 +3,11 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { Donation } from './donation.entity';
 
 @Entity()
 export class Project {
@@ -21,11 +23,19 @@ export class Project {
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   creationDate: Date;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, {
+    eager: true,
+  })
   user: User;
 
   @Column({ nullable: true, default: 0 })
   donationCollected: number;
+
+  @OneToMany(() => Donation, (donation) => donation.project, {
+    cascade: false,
+    eager: true,
+  })
+  donations: Donation[];
 
   constructor() {}
 }

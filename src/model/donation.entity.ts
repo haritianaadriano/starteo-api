@@ -16,7 +16,9 @@ export class Donation {
   @Column()
   amount: number;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, {
+    eager: true,
+  })
   user: User;
 
   @ManyToOne(() => Project)

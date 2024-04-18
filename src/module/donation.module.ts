@@ -11,5 +11,6 @@ import { DonationMapper } from '../controller/mapper/donation.mapper';
   imports: [TypeOrmModule.forFeature([Donation]), ProjectModule, UserModule],
   providers: [DonationService, DonationMapper],
   controllers: [DonationController],
+  exports: [DonationService],
 })
 export class DonationModule {}
