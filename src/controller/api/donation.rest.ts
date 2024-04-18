@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserApi } from './user.rest';
 
-export class CreateDonation {
+export class CreateDonationApi {
   @ApiProperty()
   user_id: string;
 
@@ -18,4 +18,7 @@ export class DonationApi {
 
   @ApiProperty()
   amount: number;
+
+  @ApiProperty()
+  creation_date: Date;
 }

@@ -3,6 +3,9 @@ import { UserApi } from './user.rest';
 
 export class CreateProjectApi {
   @ApiProperty()
+  id: string;
+
+  @ApiProperty()
   description: string;
 
   @ApiProperty()
@@ -21,6 +24,9 @@ export class ProjectApi {
 
   @ApiProperty()
   title: string;
+
+  @ApiProperty()
+  creation_datetime: Date;
 
   @ApiProperty()
   user: UserApi;

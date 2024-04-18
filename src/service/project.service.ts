@@ -1,15 +1,23 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from '../model/project.entity';
 import { Repository } from 'typeorm';
 import { PaginationQuery } from '../controller/queries/pagination.query';
+import { UserService } from './user.service';
+import { CreateProjectApi } from '../controller/api/project.rest';
 
 @Injectable()
 export class ProjectService {
   constructor(
     @InjectRepository(Project)
     private readonly projectRepository: Repository<Project>,
+    @Inject(UserService)
+    private readonly userService: UserService,
   ) {}
+
+  async saveProjects(projects: CreateProjectApi[]): Promise<Project[]> {
+    return this.projectRepository.save(await this.fromCreateToDomain(projects));
+  }
 
   async findProjects(pagination: PaginationQuery): Promise<Project[]> {
     if (pagination.page === 0 || pagination.page === undefined) {
@@ -34,5 +42,22 @@ export class ProjectService {
 
   async findById(id: string): Promise<Project> {
     return this.projectRepository.findOneById(id);
+  }
+
+  async fromCreateToDomain(create: CreateProjectApi[]): Promise<Project[]> {
+    return Promise.all(
+      create.map((project) => {
+        return this.mapCreateToDomain(project);
+      }),
+    );
+  }
+
+  async mapCreateToDomain(create: CreateProjectApi): Promise<Project> {
+    const projectDomain = new Project();
+
+    projectDomain.description = create.description;
+    projectDomain.title = create.title;
+    projectDomain.user = await this.userService.findById(create.user_id);
+    return await projectDomain;
   }
 }

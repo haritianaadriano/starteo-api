@@ -38,7 +38,7 @@ export class UserController {
     type: UserApi,
   })
   @ApiTags('users')
-  async findUserById(@Param() id: string): Promise<UserApi> {
+  async findUserById(@Param('id') id: string): Promise<UserApi> {
     const user = await this.userService.findById(id);
     const mappedUser = this.userMapper.fromDomainToRest(user);
     return mappedUser;

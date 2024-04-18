@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Donation } from '../model/donation.entity';
 import { Repository } from 'typeorm';
-import { CreateDonation } from '../controller/api/donation.rest';
+import { CreateDonationApi } from '../controller/api/donation.rest';
 import { UserService } from './user.service';
 import { ProjectService } from './project.service';
 
@@ -21,19 +21,20 @@ export class DonationService {
     return this.donationRepository
       .createQueryBuilder('donation')
       .leftJoinAndSelect('donation.project', 'project')
+      .leftJoinAndSelect('project.user', 'user')
       .where('donation.project = :projectId', { projectId })
       .getMany();
   }
 
-  async saveDonation(donationToSave: CreateDonation[]): Promise<Donation[]> {
+  async saveDonations(
+    donationToSave: CreateDonationApi[],
+  ): Promise<Donation[]> {
     return this.donationRepository.save(
-      await this.fromCreateDonationToDomain(donationToSave),
+      await this.fromCreateToDomain(donationToSave),
     );
   }
 
-  async fromCreateDonationToDomain(
-    toMap: CreateDonation[],
-  ): Promise<Donation[]> {
+  async fromCreateToDomain(toMap: CreateDonationApi[]): Promise<Donation[]> {
     return Promise.all(
       toMap.map(async (donation) => {
         return await this.mapCreateToDomain(donation);
@@ -41,7 +42,7 @@ export class DonationService {
     );
   }
 
-  async mapCreateToDomain(create: CreateDonation): Promise<Donation> {
+  async mapCreateToDomain(create: CreateDonationApi): Promise<Donation> {
     const domainDonation = new Donation();
 
     domainDonation.amount = create.amount;

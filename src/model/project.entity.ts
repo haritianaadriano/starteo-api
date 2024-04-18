@@ -24,7 +24,7 @@ export class Project {
   @ManyToOne(() => User)
   user: User;
 
-  @Column()
+  @Column({ nullable: true, default: 0 })
   donationCollected: number;
 
   constructor() {}
