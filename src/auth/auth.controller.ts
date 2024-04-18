@@ -6,7 +6,7 @@ import { Public } from '../module/decorator/public-access.decorator';
 import { SignupApi } from '../controller/api/signup.rest';
 import { SignInApi } from '../controller/api/signin.rest';
 import { TokenApi } from '../controller/api/token.rest';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserApi } from '../controller/api/user.rest';
 
 @Controller('auth')
@@ -33,6 +33,10 @@ export class AuthController {
   @ApiCreatedResponse({
     description: 'User created',
     type: UserApi,
+  })
+  @ApiOperation({
+    description:
+      'Create new user as STUDENT | PROFESSIONAL like customization option',
   })
   @ApiTags('auth')
   signUp(@Body() toCreate: SignupApi): Promise<UserApi> {

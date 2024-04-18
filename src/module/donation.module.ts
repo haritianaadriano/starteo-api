@@ -5,10 +5,11 @@ import { ProjectModule } from './project.module';
 import { DonationService } from '../service/donation.service';
 import { UserModule } from './user.module';
 import { DonationController } from '../controller/donation.controller';
+import { DonationMapper } from '../controller/mapper/donation.mapper';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Donation]), ProjectModule, UserModule],
-  providers: [DonationService],
+  providers: [DonationService, DonationMapper],
   controllers: [DonationController],
 })
 export class DonationModule {}
