@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ProjectApi } from '../api/project.rest';
 import { Project } from '../../model/project.entity';
 import { UserMapper } from './user.mapper';
+import { Donation } from '../../model/donation.entity';
 
 @Injectable()
 export class ProjectMapper {
@@ -18,6 +19,9 @@ export class ProjectMapper {
     projectApi.creation_datetime = project.creationDate;
     projectApi.title = project.title;
     projectApi.user = await this.userMapper.fromDomainToRest(project.user);
+    projectApi.donation_collected = this.sumCollectedDonation(
+      project.donations,
+    );
     return projectApi;
   }
 
@@ -31,6 +35,13 @@ export class ProjectMapper {
     projectApi.creation_datetime = project.creationDate;
     projectApi.title = project.title;
     projectApi.user = await this.userMapper.fromDomainToRest(project.user);
+    projectApi.donation_collected = this.sumCollectedDonation(
+      project.donations,
+    );
     return projectApi;
+  }
+
+  sumCollectedDonation(donations: Donation[]) {
+    return donations.reduce((acc, donation) => acc + donation.amount, 0);
   }
 }
