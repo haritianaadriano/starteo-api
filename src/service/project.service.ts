@@ -15,7 +15,13 @@ export class ProjectService {
     private readonly userService: UserService,
   ) {}
 
-  async saveProjects(projects: CreateProjectApi[]): Promise<Project[]> {
+  async saveProjects(
+    projects: CreateProjectApi[],
+    userId: string,
+  ): Promise<Project[]> {
+    projects.forEach((project) =>
+      this.validateUserPathAndPayload(project, userId),
+    );
     return this.projectRepository.save(await this.fromCreateToDomain(projects));
   }
 
@@ -59,5 +65,14 @@ export class ProjectService {
     projectDomain.title = create.title;
     projectDomain.user = await this.userService.findById(create.user_id);
     return await projectDomain;
+  }
+
+  validateUserPathAndPayload(payload: CreateProjectApi, userId: string) {
+    if (payload.user_id != userId) {
+      throw new HttpException(
+        'User path doesn t match to user payload',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

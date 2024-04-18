@@ -49,7 +49,10 @@ export class DonationController {
     @Param('project_id') projectId: string,
     @Body() toSave: CreateDonationApi[],
   ) {
-    const donations = await this.donationService.saveDonations(toSave);
+    const donations = await this.donationService.saveDonations(
+      toSave,
+      projectId,
+    );
     const mappedDonations = await Promise.all(
       donations.map((donation) =>
         this.donationMapper.fromDomainToRest(donation),

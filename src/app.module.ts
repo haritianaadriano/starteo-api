@@ -12,7 +12,7 @@ import { DonationModule } from './module/donation.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    DatabaseModule,
+    LocalDatabaseModule,
     DbHealthModule,
     UserModule,
     AuthModule,
