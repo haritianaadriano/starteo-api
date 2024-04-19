@@ -1,12 +1,22 @@
 import { SignupApi } from '../api/signup.rest';
 import { UserApi } from '../api/user.rest';
+import { WhoamiApi } from '../api/whoami.rest';
 import { User } from './../../model/user.entity';
 
 export class UserMapper {
   constructor() {}
 
+  async toWhoamiApi(user: Promise<User>): Promise<WhoamiApi> {
+    const whoamiApi = new WhoamiApi();
+
+    whoamiApi.id = (await user).id;
+    whoamiApi.customization_option = (await user).customizationOption;
+    return whoamiApi;
+  } 
+
   async fromDomainToRest(user: User): Promise<UserApi> {
     const userApi = new UserApi();
+
     userApi.id = user.id;
     userApi.username = user.username;
     userApi.setEmail(user.email);
@@ -20,6 +30,7 @@ export class UserMapper {
 
   async toRest(promiseUser: Promise<User>): Promise<UserApi> {
     const userApi = new UserApi();
+
     const user = await promiseUser;
     userApi.id = user.id;
     userApi.username = user.username;
@@ -34,6 +45,7 @@ export class UserMapper {
 
   userApiToDomain(userApi: UserApi): User {
     const user = new User();
+
     user.setEmail(userApi.email);
     user.setFirstname(userApi.firstname);
     user.setLastname(userApi.lastname);
@@ -46,6 +58,7 @@ export class UserMapper {
 
   signupApiToDomain(signupApi: SignupApi): User {
     const user = new User();
+    
     user.setEmail(signupApi.email);
     user.setFirstname(signupApi.firstname);
     user.setLastname(signupApi.lastname);

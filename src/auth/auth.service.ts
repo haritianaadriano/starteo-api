@@ -1,6 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from './../service/user.service';
+import { jwtConstants } from './constant';
+import { User } from '../model/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -8,6 +10,17 @@ export class AuthService {
     private userService: UserService,
     private jwtService: JwtService,
   ) {}
+
+  async retrieveUser(token: string): Promise<User> {
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: jwtConstants.secret,
+      });
+      return this.userService.findById(payload.id);
+    } catch {
+      throw new HttpException("Cannot map user", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
   async signIn(
     email: string,
