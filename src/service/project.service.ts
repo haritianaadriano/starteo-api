@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { PaginationQuery } from '../controller/queries/pagination.query';
 import { UserService } from './user.service';
 import { CreateProjectApi } from '../controller/api/project.rest';
+import { validate } from './validator/pagination.validator';
 
 @Injectable()
 export class ProjectService {
@@ -26,13 +27,7 @@ export class ProjectService {
   }
 
   async findProjects(pagination: PaginationQuery): Promise<Project[]> {
-    if (pagination.page === 0 || pagination.page === undefined) {
-      throw new HttpException('page required', HttpStatus.BAD_REQUEST);
-    }
-
-    if (pagination.page_size === 0 || pagination.page_size === undefined) {
-      throw new HttpException('page_size required', HttpStatus.BAD_REQUEST);
-    }
+    validate(pagination);
 
     const { page, page_size } = pagination;
     const skip = (page - 1) * page_size;
@@ -41,6 +36,24 @@ export class ProjectService {
       take: page_size,
       skip,
     });
+  }
+
+  async findProjectsByUserId(
+    pagination: PaginationQuery,
+    userId: string,
+  ): Promise<Project[]> {
+    validate(pagination);
+
+    const { page, page_size } = pagination;
+    const skip = (page - 1) * page_size;
+
+    return this.projectRepository
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.user', 'user')
+      .where('project.user = :userId', { userId })
+      .skip(skip)
+      .take(page_size)
+      .getMany();
   }
 
   async findById(id: string): Promise<Project> {

@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from './../service/user.service';
 import { jwtConstants } from './constant';
@@ -18,7 +23,10 @@ export class AuthService {
       });
       return this.userService.findById(payload.id);
     } catch {
-      throw new HttpException("Cannot map user", HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Cannot map user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 

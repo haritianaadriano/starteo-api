@@ -40,6 +40,28 @@ export class ProjectController {
   }
 
   @UseGuards(AuthGuard)
+  @Get('/users/:user_id/projects')
+  @ApiCreatedResponse({
+    description: 'Projects found from given user',
+    type: ProjectApi,
+    isArray: true,
+  })
+  @ApiTags('projects')
+  async findUserProjects(
+    @Param('user_id') userId: string,
+    @Query() pagination: PaginationQuery,
+  ): Promise<ProjectApi[]> {
+    const projects = await this.projectService.findProjectsByUserId(
+      pagination,
+      userId,
+    );
+    const mappedProjects = await Promise.all(
+      projects.map((project) => this.projectMapper.fromDomainToRest(project)),
+    );
+    return mappedProjects;
+  }
+
+  @UseGuards(AuthGuard)
   @Put('/users/:user_id/projects')
   @ApiCreatedResponse({
     description: 'Projects created',
