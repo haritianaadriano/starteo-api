@@ -50,6 +50,7 @@ export class ProjectService {
     return this.projectRepository
       .createQueryBuilder('project')
       .leftJoinAndSelect('project.user', 'user')
+      .leftJoinAndSelect('project.donations', 'donations')
       .where('project.user = :userId', { userId })
       .skip(skip)
       .take(page_size)

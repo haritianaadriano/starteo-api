@@ -11,6 +11,18 @@ export class ProjectMapper {
     private readonly userMapper: UserMapper,
   ) {}
 
+  async createdRest(project: Project): Promise<ProjectApi> {
+    const projectApi = new ProjectApi();
+    projectApi.description = project.description;
+    projectApi.donation_collected = project.donationCollected;
+    projectApi.id = project.id;
+    projectApi.creation_datetime = project.creationDate;
+    projectApi.title = project.title;
+    projectApi.user = await this.userMapper.fromDomainToRest(project.user);
+    projectApi.donation_collected = 0;
+    return projectApi;
+  }
+
   async fromDomainToRest(project: Project): Promise<ProjectApi> {
     const projectApi = new ProjectApi();
     projectApi.description = project.description;
@@ -41,7 +53,14 @@ export class ProjectMapper {
     return projectApi;
   }
 
-  sumCollectedDonation(donations: Donation[]) {
+  sumCollectedDonation(donations: Donation[]): number {
+    if (donations === null) {
+      return 0;
+    }
+    if (donations.length === 0) {
+      return 0;
+    }
+
     return donations.reduce((acc, donation) => acc + donation.amount, 0);
   }
 }
