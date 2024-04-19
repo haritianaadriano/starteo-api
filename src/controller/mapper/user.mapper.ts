@@ -12,7 +12,7 @@ export class UserMapper {
     whoamiApi.id = (await user).id;
     whoamiApi.customization_option = (await user).customizationOption;
     return whoamiApi;
-  } 
+  }
 
   async fromDomainToRest(user: User): Promise<UserApi> {
     const userApi = new UserApi();
@@ -58,7 +58,7 @@ export class UserMapper {
 
   signupApiToDomain(signupApi: SignupApi): User {
     const user = new User();
-    
+
     user.setEmail(signupApi.email);
     user.setFirstname(signupApi.firstname);
     user.setLastname(signupApi.lastname);

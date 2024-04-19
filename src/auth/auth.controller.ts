@@ -1,5 +1,10 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { ApiAcceptedResponse, ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiAcceptedResponse,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { UserService } from '../service/user.service';
 import { UserMapper } from '../controller/mapper/user.mapper';
@@ -22,11 +27,12 @@ export class AuthController {
   @Public()
   @Get('/whoami')
   @ApiAcceptedResponse({
-    description: 'Tells you who you are by giving token in Bearer Authentication',
-    type: WhoamiApi
+    description:
+      'Tells you who you are by giving token in Bearer Authentication',
+    type: WhoamiApi,
   })
   @ApiTags('auth')
-  whoami(@CurrentUser() token): Promise<WhoamiApi> { 
+  whoami(@CurrentUser() token): Promise<WhoamiApi> {
     return this.userMapper.toWhoamiApi(this.authService.retrieveUser(token));
   }
 
