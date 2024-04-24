@@ -16,12 +16,30 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async retrieveUser(token: string): Promise<User> {
+  async retrieveUser(token: string): Promise<{ user: User; bearer: string }> {
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: jwtConstants.secret,
       });
-      return this.userService.findById(payload.id);
+
+      const toBearer = {
+        id: payload.id,
+        firstname: payload.firstname,
+        lastname: payload.lastname,
+        email: payload.email,
+        isSubscribed: payload.isSubscribed,
+        career_path: payload.careerPath,
+        customization_option: payload.customizationOption,
+        description: payload.description,
+        birthdate: payload.birthdate,
+        username: payload.username,
+        creation_datetime: payload.creationDate,
+      };
+
+      return {
+        user: await this.userService.findById(payload.id),
+        bearer: await this.jwtService.signAsync(toBearer)
+      };
     } catch {
       throw new HttpException(
         'Cannot map user',
@@ -42,7 +60,6 @@ export class AuthService {
       id: user.id,
       firstname: user.firstname,
       lastname: user.lastname,
-      password: user.password,
       email: user.email,
       isSubscribed: user.isSubscribed,
       career_path: user.careerPath,
