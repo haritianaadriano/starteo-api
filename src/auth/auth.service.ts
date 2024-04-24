@@ -38,7 +38,7 @@ export class AuthService {
 
       return {
         user: await this.userService.findById(payload.id),
-        bearer: await this.jwtService.signAsync(toBearer)
+        bearer: await this.jwtService.signAsync(toBearer),
       };
     } catch {
       throw new HttpException(
