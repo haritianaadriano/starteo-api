@@ -6,11 +6,12 @@ import { User } from './../../model/user.entity';
 export class UserMapper {
   constructor() {}
 
-  async toWhoamiApi(user: Promise<User>): Promise<WhoamiApi> {
+  async toWhoamiApi(user: Promise<{ user: User; bearer: string }>): Promise<WhoamiApi> {
     const whoamiApi = new WhoamiApi();
 
-    whoamiApi.id = (await user).id;
-    whoamiApi.customization_option = (await user).customizationOption;
+    whoamiApi.id = (await user).user.id;
+    whoamiApi.customization_option = await (await user).user.customizationOption;
+    whoamiApi.bearer = await (await user).bearer;
     return whoamiApi;
   }
 

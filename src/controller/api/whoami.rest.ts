@@ -7,4 +7,7 @@ export class WhoamiApi {
 
   @ApiProperty({ enum: ['PROFESSIONAL', 'STUDENT'] })
   customization_option: CustomizationOptions;
+
+  @ApiProperty()
+  bearer: string;
 }
