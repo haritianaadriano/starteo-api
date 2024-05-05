@@ -30,6 +30,8 @@ export class UserMapper {
     userApi.setCareerPath(user.careerPath);
     userApi.setCustomizationOptio(user.customizationOption);
     userApi.setDescription(user.description);
+    userApi.setBirthdate(user.birthdate);
+    userApi.setCreationDate(user.creationDate);
     return userApi;
   }
 
@@ -45,6 +47,8 @@ export class UserMapper {
     userApi.setCareerPath(user.careerPath);
     userApi.setCustomizationOptio(user.customizationOption);
     userApi.setDescription(user.description);
+    userApi.setBirthdate(user.birthdate);
+    userApi.setCreationDate(user.creationDate);
     return userApi;
   }
 
