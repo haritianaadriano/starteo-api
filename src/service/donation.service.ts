@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Donation } from '../model/donation.entity';
 import { Repository } from 'typeorm';
@@ -28,7 +28,11 @@ export class DonationService {
 
   async saveDonations(
     donationToSave: CreateDonationApi[],
+    projectId: string,
   ): Promise<Donation[]> {
+    donationToSave.forEach((donation) =>
+      this.validateProjectPathAndPayload(donation, projectId),
+    );
     return this.donationRepository.save(
       await this.fromCreateToDomain(donationToSave),
     );
@@ -51,5 +55,14 @@ export class DonationService {
     );
     domainDonation.user = await this.userService.findById(create.user_id);
     return await domainDonation;
+  }
+
+  validateProjectPathAndPayload(payload: CreateDonationApi, projectId: string) {
+    if (payload.project_id != projectId) {
+      throw new HttpException(
+        'Project path doesn t match to project payload',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

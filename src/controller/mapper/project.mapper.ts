@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ProjectApi } from '../api/project.rest';
 import { Project } from '../../model/project.entity';
 import { UserMapper } from './user.mapper';
+import { Donation } from '../../model/donation.entity';
 
 @Injectable()
 export class ProjectMapper {
@@ -9,6 +10,18 @@ export class ProjectMapper {
     @Inject(UserMapper)
     private readonly userMapper: UserMapper,
   ) {}
+
+  async createdRest(project: Project): Promise<ProjectApi> {
+    const projectApi = new ProjectApi();
+    projectApi.description = project.description;
+    projectApi.donation_collected = project.donationCollected;
+    projectApi.id = project.id;
+    projectApi.creation_datetime = project.creationDate;
+    projectApi.title = project.title;
+    projectApi.user = await this.userMapper.fromDomainToRest(project.user);
+    projectApi.donation_collected = 0;
+    return projectApi;
+  }
 
   async fromDomainToRest(project: Project): Promise<ProjectApi> {
     const projectApi = new ProjectApi();
@@ -18,6 +31,9 @@ export class ProjectMapper {
     projectApi.creation_datetime = project.creationDate;
     projectApi.title = project.title;
     projectApi.user = await this.userMapper.fromDomainToRest(project.user);
+    projectApi.donation_collected = this.sumCollectedDonation(
+      project.donations,
+    );
     return projectApi;
   }
 
@@ -31,6 +47,20 @@ export class ProjectMapper {
     projectApi.creation_datetime = project.creationDate;
     projectApi.title = project.title;
     projectApi.user = await this.userMapper.fromDomainToRest(project.user);
+    projectApi.donation_collected = this.sumCollectedDonation(
+      project.donations,
+    );
     return projectApi;
+  }
+
+  sumCollectedDonation(donations: Donation[]): number {
+    if (donations === null) {
+      return 0;
+    }
+    if (donations.length === 0) {
+      return 0;
+    }
+
+    return donations.reduce((acc, donation) => acc + donation.amount, 0);
   }
 }

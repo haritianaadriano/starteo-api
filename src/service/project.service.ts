@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { PaginationQuery } from '../controller/queries/pagination.query';
 import { UserService } from './user.service';
 import { CreateProjectApi } from '../controller/api/project.rest';
+import { validate } from './validator/pagination.validator';
 
 @Injectable()
 export class ProjectService {
@@ -15,29 +16,45 @@ export class ProjectService {
     private readonly userService: UserService,
   ) {}
 
-  async saveProjects(projects: CreateProjectApi[]): Promise<Project[]> {
+  async saveProjects(
+    projects: CreateProjectApi[],
+    userId: string,
+  ): Promise<Project[]> {
+    projects.forEach((project) =>
+      this.validateUserPathAndPayload(project, userId),
+    );
     return this.projectRepository.save(await this.fromCreateToDomain(projects));
   }
 
   async findProjects(pagination: PaginationQuery): Promise<Project[]> {
-    if (pagination.page === 0 || pagination.page === undefined) {
-      throw new HttpException('page required', HttpStatus.BAD_REQUEST);
-    }
-
-    if (pagination.page_size === 0 || pagination.page_size === undefined) {
-      throw new HttpException('page_size required', HttpStatus.BAD_REQUEST);
-    }
+    validate(pagination);
 
     const { page, page_size } = pagination;
     const skip = (page - 1) * page_size;
 
     return this.projectRepository.find({
-      relations: {
-        user: true,
-      },
       take: page_size,
       skip,
     });
+  }
+
+  async findProjectsByUserId(
+    pagination: PaginationQuery,
+    userId: string,
+  ): Promise<Project[]> {
+    validate(pagination);
+
+    const { page, page_size } = pagination;
+    const skip = (page - 1) * page_size;
+
+    return this.projectRepository
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.user', 'user')
+      .leftJoinAndSelect('project.donations', 'donations')
+      .where('project.user = :userId', { userId })
+      .skip(skip)
+      .take(page_size)
+      .getMany();
   }
 
   async findById(id: string): Promise<Project> {
@@ -59,5 +76,14 @@ export class ProjectService {
     projectDomain.title = create.title;
     projectDomain.user = await this.userService.findById(create.user_id);
     return await projectDomain;
+  }
+
+  validateUserPathAndPayload(payload: CreateProjectApi, userId: string) {
+    if (payload.user_id != userId) {
+      throw new HttpException(
+        'User path doesn t match to user payload',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }
