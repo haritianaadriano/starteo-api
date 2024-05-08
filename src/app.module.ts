@@ -8,6 +8,7 @@ import { UserModule } from './module/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ProjectModule } from './module/project.module';
 import { DonationModule } from './module/donation.module';
+import { CategoryModule } from './module/category.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { DonationModule } from './module/donation.module';
     AuthModule,
     ProjectModule,
     DonationModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Donation } from './donation.entity';
+import { Category } from './category.entity';
 
 @Entity()
 export class Project {
@@ -36,6 +37,12 @@ export class Project {
     eager: true,
   })
   donations: Donation[];
+
+  @OneToMany(() => Category, (category) => category.project, {
+    cascade: false,
+    eager: true,
+  })
+  categories: Category[];
 
   constructor() {}
 }
