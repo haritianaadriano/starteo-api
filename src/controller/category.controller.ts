@@ -1,33 +1,51 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Category } from '../model/category.entity';
-import { Repository } from 'typeorm';
-import { CreateCategoryApi } from 'src/controller/api/category.rest';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { CategoryService } from '../service/category.service';
+import { AuthGuard } from '../auth/guards/auth.guards';
+import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { CategoryApi, CreateCategoryApi } from './api/category.rest';
+import { CategoryMapper } from './mapper/category.mapper';
 
-@Injectable()
-export class CategoryService {
+@Controller()
+export class CategoryController {
   constructor(
-    @InjectRepository(Category)
-    private readonly categoryRepository: Repository<Category>,
+    private readonly categoryService: CategoryService,
+    private readonly categoryMapper: CategoryMapper,
   ) {}
 
-  async findCategories(): Promise<Category[]> {
-    return this.categoryRepository.find();
+  @UseGuards(AuthGuard)
+  @Get('/categories')
+  @ApiCreatedResponse({
+    description: 'All project categories available',
+    type: CategoryApi,
+    isArray: true,
+  })
+  @ApiTags('categories')
+  async findCategories(): Promise<CategoryApi[]> {
+    const categories = await this.categoryService.findCategories();
+    const mappedCategories = await Promise.all(
+      categories.map((category) =>
+        this.categoryMapper.fromDomainToRest(category),
+      ),
+    );
+    return mappedCategories;
   }
 
+  @UseGuards(AuthGuard)
+  @Post('/categories')
+  @ApiCreatedResponse({
+    description: 'Category created successfully',
+    type: CategoryApi,
+  })
+  @ApiBody({
+    type: CreateCategoryApi,
+  })
+  @ApiTags('categories')
   async saveCategory(
-    categoryToSave: CreateCategoryApi,
-  ): Promise<Category | undefined> {
-    const toSave = this.mapCreateToDomain(categoryToSave);
+    @Body() categoryApi: CreateCategoryApi,
+  ): Promise<CategoryApi> {
+    const category = await this.categoryService.saveCategory(categoryApi);
+    const mappedCategory = this.categoryMapper.fromDomainToRest(category);
 
-    return this.categoryRepository.save(toSave);
-  }
-
-  mapCreateToDomain(createCategory: CreateCategoryApi): Category {
-    const categoryDomain = new Category();
-
-    categoryDomain.description = createCategory.description;
-    categoryDomain.field = createCategory.field;
-    return categoryDomain;
+    return mappedCategory;
   }
 }
