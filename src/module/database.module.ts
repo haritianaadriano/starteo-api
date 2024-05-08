@@ -5,6 +5,7 @@ import { Dummy } from '../model/dummy.entity';
 import { User } from '../model/user.entity';
 import { Project } from '../model/project.entity';
 import { Donation } from '../model/donation.entity';
+import { Category } from '../model/category.entity';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { Donation } from '../model/donation.entity';
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         url: process.env.DATABASE_URL,
-        entities: [Dummy, User, Project, Donation],
+        entities: [Dummy, User, Project, Donation, Category],
         synchronize: true,
         migrationsRun: true,
       }),
@@ -34,7 +35,7 @@ export class DatabaseModule {}
         database: configService.get('POSTGRES_DATABASE'),
         password: configService.get('POSTGRES_PASSWORD'),
         port: configService.get('POSTGRES_PORT'),
-        entities: [Dummy, User, Project, Donation],
+        entities: [Dummy, User, Project, Donation, Category],
         synchronize: true,
         migrationsRun: true,
       }),
