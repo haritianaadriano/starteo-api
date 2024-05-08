@@ -1,36 +1,19 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import {
-  PostgreSqlContainer,
-  StartedPostgreSqlContainer,
-} from '@testcontainers/postgresql';
+import { StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { Dummy } from './../src/model/dummy.entity';
 import { User } from './../src/model/user.entity';
 import * as request from 'supertest';
 import { AuthModule } from './../src/auth/auth.module';
 import { DbHealthModule } from './../src/module/dummy.module';
-import { UserModule } from './../src/module/user.module';
 import { AppController } from './../src/app.controller';
 import { AppService } from './../src/app.service';
+import { signinBody, signupBody } from './utils/http.body';
+import { postgresContainer } from './utils/postgres.container';
 
 // UTILS
 let httpServer;
-let signinBody = {
-  email: 'pro1@gmail.com',
-  password: 'passwd',
-};
-let signupBody = {
-  firstname: 'Adriano',
-  lastname: 'Haritiana',
-  email: 'pro1@gmail.com',
-  username: 'haritianaadriano',
-  password: 'passwd',
-  birthdate: '2024-05-08T12:17:10.145Z',
-  description: 'string',
-  career_path: 'string',
-  customization_option: 'PROFESSIONAL',
-};
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
@@ -39,11 +22,7 @@ describe('AuthController (e2e)', () => {
   jest.setTimeout(60000);
 
   beforeAll(async () => {
-    container = await new PostgreSqlContainer()
-      .withPassword('password')
-      .withDatabase('database')
-      .withUsername('postgres')
-      .start();
+    container = await postgresContainer();
 
     module = await Test.createTestingModule({
       imports: [
@@ -60,7 +39,6 @@ describe('AuthController (e2e)', () => {
 
         AuthModule,
         DbHealthModule,
-        UserModule,
       ],
       controllers: [AppController],
       providers: [AppService],
@@ -79,6 +57,7 @@ describe('AuthController (e2e)', () => {
   });
 
   //TEST: auth e2e testing
+  //Each test is ordered by code lines
   it('POST: /auth/signup', async () => {
     const res = await request(httpServer)
       .post('/auth/signup')

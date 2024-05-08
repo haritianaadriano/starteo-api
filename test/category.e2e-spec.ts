@@ -5,12 +5,18 @@ import { StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { Dummy } from './../src/model/dummy.entity';
 import { User } from './../src/model/user.entity';
 import * as request from 'supertest';
-import { DbHealthModule } from './../src/module/dummy.module';
+import { AuthModule } from './../src/auth/auth.module';
 import { AppController } from './../src/app.controller';
 import { AppService } from './../src/app.service';
+import { createCategoryBody, signinBody, signupBody } from './utils/http.body';
 import { postgresContainer } from './utils/postgres.container';
+import { CategoryModule } from './../src/module/category.module';
 
-describe('DbHealthController (e2e)', () => {
+// UTILS
+let httpServer;
+let whoamiBody;
+
+describe('CategoryController (e2e)', () => {
   let app: INestApplication;
   let module: TestingModule;
   let container: StartedPostgreSqlContainer;
@@ -32,7 +38,8 @@ describe('DbHealthController (e2e)', () => {
           },
         }),
 
-        DbHealthModule,
+        AuthModule,
+        CategoryModule,
       ],
       controllers: [AppController],
       providers: [AppService],
@@ -40,6 +47,12 @@ describe('DbHealthController (e2e)', () => {
 
     app = module.createNestApplication();
     await app.init();
+    httpServer = app.getHttpServer();
+
+    await request(httpServer).post('/auth/signup').send(signupBody);
+    whoamiBody = (
+      await request(httpServer).post('/auth/signin').send(signinBody)
+    ).body;
   });
 
   afterAll(async () => {
@@ -49,10 +62,15 @@ describe('DbHealthController (e2e)', () => {
     }
   });
 
-  it('/health/db (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/health/db')
-      .expect(200)
-      .expect('OK');
+  //TEST: category e2e testing
+  it('POST: /categories', async () => {
+    const res = await request(httpServer)
+      .post('/categories')
+      .set('Authorization', `Bearer ${whoamiBody.token}`)
+      .send(createCategoryBody)
+      .expect(201);
+
+    expect(res.body.field).toBe(createCategoryBody.field);
+    expect(res.body.description).toBe(createCategoryBody.description);
   });
 });
