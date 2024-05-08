@@ -21,7 +21,7 @@ export class Category {
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   creationDate: Date;
 
-  @ManyToOne(() => Project)
+  @ManyToOne(() => Project, { nullable: true })
   project: Project;
 
   constructor() {}
