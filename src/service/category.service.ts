@@ -27,7 +27,7 @@ export class CategoryService {
     const categoryDomain = new Category();
 
     categoryDomain.description = createCategory.description;
-    categoryDomain.field = categoryDomain.field;
+    categoryDomain.field = createCategory.field;
     return categoryDomain;
   }
 }

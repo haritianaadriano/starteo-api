@@ -45,7 +45,7 @@ export class CategoryController {
   ): Promise<CategoryApi> {
     const category = await this.categoryService.saveCategory(categoryApi);
     const mappedCategory = this.categoryMapper.fromDomainToRest(category);
-    
+
     return mappedCategory;
   }
 }
