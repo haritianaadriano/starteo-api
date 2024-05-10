@@ -8,7 +8,7 @@ import * as request from 'supertest';
 import { AuthModule } from './../src/auth/auth.module';
 import { AppController } from './../src/app.controller';
 import { AppService } from './../src/app.service';
-import { createCategoryBody, signinBody, signupBody } from './utils/http.body';
+import { signinBody, signupBody } from './utils/http.body';
 import { CategoryModule } from './../src/module/category.module';
 import { Category } from './../src/model/category.entity';
 import { Project } from './../src/model/project.entity';
@@ -17,18 +17,22 @@ import { ProjectModule } from './../src/module/project.module';
 import { DonationModule } from './../src/module/donation.module';
 import { Donation } from './../src/model/donation.entity';
 import { DbHealthModule } from './../src/module/dummy.module';
+import { CreateProjectApi } from './../src/controller/api/project.rest';
 
 // UTILS
 let httpServer;
 let whoamiBody;
-let categoryCreated1;
+let me;
+let createdProject;
 
-describe('CategoryController (e2e)', () => {
+let createProjectBody = new CreateProjectApi();
+createProjectBody.title = 'Create Project via test';
+createProjectBody.description = 'Created project description';
+
+describe('ProjectController (e2e)', () => {
   let app: INestApplication;
   let module: TestingModule;
   let container: StartedPostgreSqlContainer;
-  //TIPS: in need you can change this according to how many times ...
-  // ... your computer compute the container
   jest.setTimeout(60000);
 
   beforeAll(async () => {
@@ -61,7 +65,7 @@ describe('CategoryController (e2e)', () => {
     await app.init();
     httpServer = app.getHttpServer();
 
-    await request(httpServer).post('/auth/signup').send(signupBody);
+    me = (await request(httpServer).post('/auth/signup').send(signupBody)).body;
     whoamiBody = (
       await request(httpServer).post('/auth/signin').send(signinBody)
     ).body;
@@ -74,26 +78,62 @@ describe('CategoryController (e2e)', () => {
     }
   });
 
-  //TEST: category e2e testing
-  it('POST: /categories', async () => {
-    const res = await request(httpServer)
-      .post('/categories')
-      .set('Authorization', `Bearer ${whoamiBody.token}`)
-      .send(createCategoryBody)
-      .expect(201);
+  it('PUT: /users/:userId/projects', async () => {
+    createProjectBody.user_id = me.id;
 
-    categoryCreated1 = res.body;
-    expect(res.body.field).toBe(createCategoryBody.field);
-    expect(res.body.description).toBe(createCategoryBody.description);
+    createdProject = await request(httpServer)
+      .put(`/users/${me.id}/projects`)
+      .set('Authorization', `Bearer ${whoamiBody.token}`)
+      .send([createProjectBody])
+      .expect(200);
+
+    expect(createdProject.body).not.toBeNull();
+    expect(createdProject.body[0].title).toBe(createProjectBody.title);
+    expect(createdProject.body[0].description).toBe(
+      createProjectBody.description,
+    );
   });
 
-  it('GET: /categories', async () => {
+  it('GET: /projects', async () => {
+    const page = 1;
+    const page_size = 10;
     const res = await request(httpServer)
-      .get('/categories')
+      .get(`/projects?page=${page}&page_size=${page_size}`)
       .set('Authorization', `Bearer ${whoamiBody.token}`)
       .expect(200);
 
     expect(res.body).not.toBeNull();
-    expect(res.body).toContainEqual(categoryCreated1);
+    expect(res.body).toContainEqual(createdProject.body[0]);
+
+    //Handle error
+    await request(httpServer)
+      .get(`/projects?page=${page}`)
+      .set('Authorization', `Bearer ${whoamiBody.token}`)
+      .expect(400);
+  });
+
+  it('GET: /projects/:projectId', async () => {
+    const res = await request(httpServer)
+      .get(`/projects/${createdProject.body[0].id}`)
+      .set('Authorization', `Bearer ${whoamiBody.token}`)
+      .expect(200);
+
+    expect(res.body).not.toBeNull();
+    expect(res.body).toStrictEqual(createdProject.body[0]);
+  });
+
+  it('GET: /users/:userId/projects', async () => {
+    const res = await request(httpServer)
+      .get(`/users/${me.id}/projects?page=1&page_size=10`)
+      .set('Authorization', `Bearer ${whoamiBody.token}`)
+      .expect(200);
+
+    expect(res.body).toContainEqual(createdProject.body[0]);
+
+    //Handle error
+    await request(httpServer)
+      .get(`/projects?page=1}`)
+      .set('Authorization', `Bearer ${whoamiBody.token}`)
+      .expect(400);
   });
 });
