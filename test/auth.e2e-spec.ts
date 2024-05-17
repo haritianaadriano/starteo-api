@@ -14,6 +14,16 @@ import { postgresContainer } from './utils/postgres.container';
 
 // UTILS
 let httpServer;
+const userRegistrationPayloadFailed = {
+  firstname: 'Adriano',
+  lastname: 'Haritiana',
+  email: 'pro1@gmail.com',
+  username: 'haritianaadriano',
+  password: 'passwd',
+  birthdate: '2024-05-08T12:17:10.145Z',
+  description: 'string',
+  career_path: 'string',
+};
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
@@ -71,6 +81,13 @@ describe('AuthController (e2e)', () => {
     expect(res.body.customization_option).toBe(signupBody.customization_option);
     expect(res.body.birthdate).toBe(signupBody.birthdate);
     expect(res.body.career_path).toBe(signupBody.career_path);
+  });
+
+  it('POST: /auth/signup (400)', async () => {
+    await request(httpServer)
+      .post('/auth/signup')
+      .send(userRegistrationPayloadFailed)
+      .expect(400);
   });
 
   it('POST: /auth/signin', async () => {

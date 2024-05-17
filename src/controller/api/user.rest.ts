@@ -13,6 +13,8 @@ export class UserApi {
   @ApiProperty()
   email: string;
   @ApiProperty()
+  phone_number: string;
+  @ApiProperty()
   description: string;
   @ApiProperty()
   birthdate: Date;

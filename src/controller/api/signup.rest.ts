@@ -1,26 +1,51 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail } from 'class-validator';
+import {
+  IsDateString,
+  IsEmail,
+  IsEnum,
+  IsString,
+  NotEquals,
+} from 'class-validator';
 import { CustomizationOptions } from '../../model/enums/customization.enum';
 
 export class SignupApi {
   @ApiProperty()
+  @IsString()
   firstname: string;
+
   @ApiProperty()
+  @IsString()
   lastname: string;
+
   @ApiProperty()
   @IsEmail()
   email: string;
+
+  @ApiProperty()
+  @IsString()
+  @NotEquals(null)
+  phone_number: string;
+
   @ApiProperty()
   username: string;
+
   @ApiProperty()
   password: string;
+
   @ApiProperty()
+  @IsDateString()
   birthdate: Date;
+
   @ApiProperty()
   description: string;
+
   @ApiProperty()
+  @IsString()
   career_path: string;
+
   @ApiProperty({ enum: ['PROFESSIONAL', 'STUDENT'] })
+  @NotEquals(null)
+  @IsEnum(CustomizationOptions)
   customization_option: CustomizationOptions;
 
   constructor() {}

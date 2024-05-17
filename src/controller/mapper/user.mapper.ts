@@ -77,6 +77,7 @@ export class UserMapper {
     user.setCareerPath(signupApi.career_path);
     user.setDescription(signupApi.description);
     user.setCustomizationOptio(signupApi.customization_option);
+    user.phoneNumer = signupApi.phone_number;
     return user;
   }
 }

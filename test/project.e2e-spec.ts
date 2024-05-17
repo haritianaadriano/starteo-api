@@ -94,6 +94,13 @@ describe('ProjectController (e2e)', () => {
     );
   });
 
+  it('GET: /projects (400)', async () => {
+    await request(httpServer)
+      .get('/projects')
+      .set('Authorization', `Bearer ${whoamiBody.token}`)
+      .expect(400);
+  });
+
   it('GET: /projects', async () => {
     const page = 1;
     const page_size = 10;
