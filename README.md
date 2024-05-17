@@ -1,1 +1,1 @@
-## Personal blog api
+## Business api
