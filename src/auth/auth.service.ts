@@ -34,6 +34,7 @@ export class AuthService {
         birthdate: payload.birthdate,
         username: payload.username,
         creation_datetime: payload.creationDate,
+        phone_number: payload.phone_number,
       };
 
       return {
@@ -68,6 +69,7 @@ export class AuthService {
       birthdate: user.birthdate,
       username: user.username,
       creation_datetime: user.creationDate,
+      phone_number: user.phoneNumer,
     };
     return {
       email: user.email,

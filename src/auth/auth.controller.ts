@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import {
   ApiAcceptedResponse,
   ApiCreatedResponse,
@@ -49,6 +56,7 @@ export class AuthController {
 
   @Public()
   @Post('/signup')
+  @UsePipes(new ValidationPipe({ transform: true }))
   @ApiCreatedResponse({
     description: 'User created',
     type: UserApi,
