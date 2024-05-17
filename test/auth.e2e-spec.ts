@@ -5,12 +5,17 @@ import { StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { Dummy } from './../src/model/dummy.entity';
 import { User } from './../src/model/user.entity';
 import * as request from 'supertest';
+import { AuthModule } from './../src/auth/auth.module';
 import { DbHealthModule } from './../src/module/dummy.module';
 import { AppController } from './../src/app.controller';
 import { AppService } from './../src/app.service';
+import { signinBody, signupBody } from './utils/http.body';
 import { postgresContainer } from './utils/postgres.container';
 
-describe('DbHealthController (e2e)', () => {
+// UTILS
+let httpServer;
+
+describe('AuthController (e2e)', () => {
   let app: INestApplication;
   let module: TestingModule;
   let container: StartedPostgreSqlContainer;
@@ -32,6 +37,7 @@ describe('DbHealthController (e2e)', () => {
           },
         }),
 
+        AuthModule,
         DbHealthModule,
       ],
       controllers: [AppController],
@@ -40,6 +46,7 @@ describe('DbHealthController (e2e)', () => {
 
     app = module.createNestApplication();
     await app.init();
+    httpServer = app.getHttpServer();
   });
 
   afterAll(async () => {
@@ -49,10 +56,30 @@ describe('DbHealthController (e2e)', () => {
     }
   });
 
-  it('/health/db (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/health/db')
-      .expect(200)
-      .expect('OK');
+  //TEST: auth e2e testing
+  //Each test is ordered by code lines
+  it('POST: /auth/signup', async () => {
+    const res = await request(httpServer)
+      .post('/auth/signup')
+      .send(signupBody)
+      .expect(201);
+
+    expect(res.body.firstname).toBe(signupBody.firstname);
+    expect(res.body.lastname).toBe(signupBody.lastname);
+    expect(res.body.email).toBe(signupBody.email);
+    expect(res.body.username).toBe(signupBody.username);
+    expect(res.body.customization_option).toBe(signupBody.customization_option);
+    expect(res.body.birthdate).toBe(signupBody.birthdate);
+    expect(res.body.career_path).toBe(signupBody.career_path);
+  });
+
+  it('POST: /auth/signin', async () => {
+    const res = await request(httpServer)
+      .post('/auth/signin')
+      .send(signinBody)
+      .expect(201);
+
+    expect(res.body.email).toBe(signinBody.email);
+    expect(res.body.token).not.toBeNull();
   });
 });
