@@ -13,6 +13,7 @@ export const signupBody = {
   description: 'string',
   career_path: 'string',
   customization_option: 'PROFESSIONAL',
+  phone_number: '1234389',
 };
 
 export const createCategoryBody = {
