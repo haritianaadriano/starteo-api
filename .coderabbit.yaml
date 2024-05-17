@@ -9,10 +9,13 @@ reviews:
   review_status: true
   collapse_walkthrough: false
   auto_review:
+    base_branches:
+      - prod
+      - preprod
     enabled: true
     ignore_title_keywords:
       - "WIP"
       - "DO NOT MERGE"
-    drafts: false
+    drafts: true
 chat:
   auto_reply: true
