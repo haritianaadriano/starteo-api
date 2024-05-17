@@ -17,19 +17,21 @@ import { ProjectModule } from './../src/module/project.module';
 import { DonationModule } from './../src/module/donation.module';
 import { Donation } from './../src/model/donation.entity';
 import { DbHealthModule } from './../src/module/dummy.module';
-import { CreateProjectApi } from './../src/controller/api/project.rest';
+import { createProjectBody } from './project.e2e-spec';
+import { CreateDonationApi } from './../src/controller/api/donation.rest';
 
-// UTILS
+//UTILS
 let httpServer;
 let whoamiBody;
 let me;
 let createdProject;
+let createdDonation;
 
-export let createProjectBody = new CreateProjectApi();
-createProjectBody.title = 'Create Project via test';
-createProjectBody.description = 'Created project description';
+let createDonationBody = new CreateDonationApi();
+createDonationBody.amount = 400000000;
+createProjectBody.description = 'Create a donation';
 
-describe('ProjectController (e2e)', () => {
+describe('DonationController (e2e)', () => {
   let app: INestApplication;
   let module: TestingModule;
   let container: StartedPostgreSqlContainer;
@@ -60,7 +62,10 @@ describe('ProjectController (e2e)', () => {
       controllers: [AppController],
       providers: [AppService],
     }).compile();
+    app = module.createNestApplication();
+    await app.init();
 
+    httpServer = app.getHttpServer();
     app = module.createNestApplication();
     await app.init();
     httpServer = app.getHttpServer();
@@ -68,6 +73,13 @@ describe('ProjectController (e2e)', () => {
     me = (await request(httpServer).post('/auth/signup').send(signupBody)).body;
     whoamiBody = (
       await request(httpServer).post('/auth/signin').send(signinBody)
+    ).body;
+    createdProject = (
+      await request(httpServer)
+        .put(`/users/${me.id}/projects`)
+        .set('Authorization', `Bearer ${whoamiBody.token}`)
+        .send([createProjectBody])
+        .expect(200)
     ).body;
   });
 
@@ -78,69 +90,22 @@ describe('ProjectController (e2e)', () => {
     }
   });
 
-  it('PUT: /users/:userId/projects', async () => {
-    createProjectBody.user_id = me.id;
+  it('POST: /projects/:projectId/donations', async () => {
+    createDonationBody.project_id = createdProject.body.id;
+    createDonationBody.user_id = me.id;
 
-    createdProject = await request(httpServer)
-      .put(`/users/${me.id}/projects`)
+    createdDonation = await request(httpServer)
+      .post(`/projects/${createdProject.id}/donations`)
       .set('Authorization', `Bearer ${whoamiBody.token}`)
-      .send([createProjectBody])
-      .expect(200);
-
-    expect(createdProject.body).not.toBeNull();
-    expect(createdProject.body[0].title).toBe(createProjectBody.title);
-    expect(createdProject.body[0].description).toBe(
-      createProjectBody.description,
-    );
+      .send([createDonationBody]);
   });
 
-  it('GET: /projects (400)', async () => {
-    await request(httpServer)
-      .get('/projects')
-      .set('Authorization', `Bearer ${whoamiBody.token}`)
-      .expect(400);
-  });
-
-  it('GET: /projects', async () => {
-    const page = 1;
-    const page_size = 10;
+  it('GET: /projects/:projectId/donations', async () => {
     const res = await request(httpServer)
-      .get(`/projects?page=${page}&page_size=${page_size}`)
+      .get(`/projects/${createdProject.id}/donations`)
       .set('Authorization', `Bearer ${whoamiBody.token}`)
       .expect(200);
 
     expect(res.body).not.toBeNull();
-    expect(res.body).toContainEqual(createdProject.body[0]);
-
-    //Handle error
-    await request(httpServer)
-      .get(`/projects?page=${page}`)
-      .set('Authorization', `Bearer ${whoamiBody.token}`)
-      .expect(400);
-  });
-
-  it('GET: /projects/:projectId', async () => {
-    const res = await request(httpServer)
-      .get(`/projects/${createdProject.body[0].id}`)
-      .set('Authorization', `Bearer ${whoamiBody.token}`)
-      .expect(200);
-
-    expect(res.body).not.toBeNull();
-    expect(res.body).toStrictEqual(createdProject.body[0]);
-  });
-
-  it('GET: /users/:userId/projects', async () => {
-    const res = await request(httpServer)
-      .get(`/users/${me.id}/projects?page=1&page_size=10`)
-      .set('Authorization', `Bearer ${whoamiBody.token}`)
-      .expect(200);
-
-    expect(res.body).toContainEqual(createdProject.body[0]);
-
-    //Handle error
-    await request(httpServer)
-      .get(`/projects?page=1}`)
-      .set('Authorization', `Bearer ${whoamiBody.token}`)
-      .expect(400);
   });
 });
