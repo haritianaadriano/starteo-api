@@ -29,7 +29,7 @@ export class User {
   email: string;
 
   @Column({ default: '' })
-  phoneNumer: string;
+  phoneNumber: string;
 
   @Column()
   birthdate: Date;
