@@ -3,10 +3,12 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { CustomizationOptions } from './enums/customization.enum';
 
 @Entity()
+@Unique(['email', 'phoneNumber'])
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
