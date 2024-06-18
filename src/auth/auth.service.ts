@@ -69,7 +69,7 @@ export class AuthService {
       birthdate: user.birthdate,
       username: user.username,
       creation_datetime: user.creationDate,
-      phone_number: user.phoneNumer,
+      phone_number: user.phoneNumber,
     };
     return {
       email: user.email,
