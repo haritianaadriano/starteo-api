@@ -8,8 +8,8 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('Personal Blog api')
-    .setDescription('Simple project to mastering nest')
+    .setTitle('Starteo api Documentation')
+    .setDescription('Simple project to mastering business')
     .setVersion('1.0')
     .build();
 
